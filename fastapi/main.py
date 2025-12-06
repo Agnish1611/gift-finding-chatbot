@@ -73,7 +73,7 @@ class GiftFinderDeps(BaseModel):
 os.environ['OPENAI_API_KEY'] = os.getenv('OPENROUTER_API_KEY', '')
 os.environ['OPENAI_BASE_URL'] = 'https://openrouter.ai/api/v1'
 
-# Use a reliable free model
+# Use a verified free model from OpenRouter
 model = OpenAIModel('amazon/nova-2-lite-v1:free')
 
 # Create a suggestion chips agent
@@ -267,11 +267,11 @@ async def chat(request: ChatRequest):
         # Generate suggestion chips using the second agent
         suggestion_chips = []
         try:
-            chip_context = f"Last user message: {request.message}\nAssistant response: {response_text[:200]}..."
+            chip_context = f"Last user message: {request.message}\nAssistant response: {response_text[:150]}..."
             chip_result = await suggestion_agent.run(
                 chip_context,
                 message_history=[],
-                model_settings={'max_tokens': 100}
+                model_settings={'max_tokens': 200}  # Increased from 100 to 200
             )
             chip_output = str(chip_result.output) if hasattr(chip_result, 'output') else str(chip_result)
             

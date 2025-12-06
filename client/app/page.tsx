@@ -147,18 +147,21 @@ export default function Home() {
     setUserContext(updatedContext);
 
     try {
-      const response = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: userMessage,
-          conversation_id: conversationId,
-          conversation_history: newMessages,
-          user_context: updatedContext,
-        }),
-      });
+      const response = await fetch(
+        "https://gift-finding-chatbot.vercel.app/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: userMessage,
+            conversation_id: conversationId,
+            conversation_history: newMessages,
+            user_context: updatedContext,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to get response");
@@ -197,7 +200,9 @@ export default function Home() {
 
   const handleReset = async () => {
     try {
-      await fetch("http://localhost:8000/reset", { method: "POST" });
+      await fetch("https://gift-finding-chatbot.vercel.app/reset", {
+        method: "POST",
+      });
       setMessages([
         {
           role: "assistant",
