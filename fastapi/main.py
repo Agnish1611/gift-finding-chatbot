@@ -73,7 +73,8 @@ class GiftFinderDeps(BaseModel):
 os.environ['OPENAI_API_KEY'] = os.getenv('OPENROUTER_API_KEY', '')
 os.environ['OPENAI_BASE_URL'] = 'https://openrouter.ai/api/v1'
 
-model = OpenAIModel('anthropic/claude-3.5-sonnet')
+# Use a reliable free model
+model = OpenAIModel('amazon/nova-2-lite-v1:free')
 
 # Create a suggestion chips agent
 suggestion_agent = Agent(

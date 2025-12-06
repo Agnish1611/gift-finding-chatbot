@@ -30,6 +30,30 @@ export default function Home() {
   const [suggestionChips, setSuggestionChips] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Function to render message content with clickable links
+  const renderMessageContent = (content: string) => {
+    // Convert URLs to clickable links
+    const urlRegex = /(https?:\/\/[^\s)]+)/g;
+    const parts = content.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-purple-600 dark:hover:text-purple-400"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -123,21 +147,18 @@ export default function Home() {
     setUserContext(updatedContext);
 
     try {
-      const response = await fetch(
-        "https://gift-finding-chatbot.vercel.app/chat",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: userMessage,
-            conversation_id: conversationId,
-            conversation_history: newMessages,
-            user_context: updatedContext,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          conversation_id: conversationId,
+          conversation_history: newMessages,
+          user_context: updatedContext,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to get response");
@@ -244,8 +265,8 @@ export default function Home() {
         )}
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          <div className="space-y-4">
+        <div className="flex-1 overflow-y-auto px-6 py-4 scroll-smooth">
+          <div className="space-y-4 pb-20">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -254,21 +275,21 @@ export default function Home() {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                     message.role === "user"
                       ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
                       : "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {message.content}
-                  </p>
+                  <div className="whitespace-pre-wrap break-words text-sm leading-relaxed overflow-wrap-anywhere">
+                    {renderMessageContent(message.content)}
+                  </div>
                 </div>
               </div>
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl bg-zinc-100 px-4 py-3 dark:bg-zinc-800">
+                <div className="max-w-[85%] rounded-2xl bg-zinc-100 px-4 py-3 dark:bg-zinc-800">
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 animate-bounce rounded-full bg-purple-600 [animation-delay:-0.3s]"></div>
                     <div className="h-2 w-2 animate-bounce rounded-full bg-purple-600 [animation-delay:-0.15s]"></div>
