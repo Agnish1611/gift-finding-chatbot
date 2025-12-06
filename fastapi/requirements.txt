@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic>=2.0
+pydantic-ai-slim[openai]
+httpx
+openai
+python-dotenv
+supabase
+typing-extensions
