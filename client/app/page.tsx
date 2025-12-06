@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -174,6 +175,8 @@ export default function Home() {
         setConversationId(data.conversation_id);
       }
 
+      console.log("response:   ", data.response);
+
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: data.response },
@@ -286,8 +289,21 @@ export default function Home() {
                       : "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
                   }`}
                 >
-                  <div className="whitespace-pre-wrap break-words text-sm leading-relaxed overflow-wrap-anywhere">
-                    {renderMessageContent(message.content)}
+                  <div className="prose prose-sm prose-zinc dark:prose-invert max-w-none">
+                    <ReactMarkdown
+                      components={{
+                        a: ({ node, ...props }) => (
+                          <a
+                            {...props}
+                            className="underline hover:text-purple-600 dark:hover:text-purple-400"
+                            target="_blank"
+                            rel="noreferrer"
+                          />
+                        ),
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
                   </div>
                 </div>
               </div>
@@ -355,7 +371,7 @@ export default function Home() {
             </button>
           </form>
           <p className="mt-2 text-center text-xs text-zinc-500 dark:text-zinc-400">
-            Powered by Claude 3.5 Sonnet via OpenRouter
+            Powered by Nova 2 Lite via OpenRouter
           </p>
         </div>
       </main>

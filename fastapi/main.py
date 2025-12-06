@@ -256,7 +256,7 @@ async def chat(request: ChatRequest):
             full_context, 
             deps=deps, 
             message_history=[],
-            model_settings={'max_tokens': 1024}
+            model_settings={'max_tokens': 4096}
         )
         
         response_text = str(result.output) if hasattr(result, 'output') else str(result)
